@@ -69,8 +69,4 @@ app.get("/", (req, res) => {
   res.send("Calculator API is running!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Calculator API server is running at http://localhost:${PORT}`);
-});
-
 module.exports = app; // Export app for potential testing

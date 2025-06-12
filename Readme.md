@@ -7,7 +7,7 @@ yarn add cors
 B2:
 Thêm dòng sau vào script của package.json: "test": "jest"
 Chạy test: yarn test
-Run server: node calculate.js
+Run server: node server.js
 Run test:
 
 API for calculate: http://localhost:3000?&number1=1&number2=2&operator=plus

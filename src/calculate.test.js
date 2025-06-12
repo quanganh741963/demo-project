@@ -1,6 +1,16 @@
 const request = require("supertest");
 const app = require("./calculate");
 
+// Đóng server sau khi test
+let server;
+beforeAll((done) => {
+  server = app.listen(3000, () => done());
+});
+
+afterAll((done) => {
+  server.close(done);
+});
+
 describe("Calculator API Tests", () => {
   describe("Error Cases", () => {
     test("division by zero should return 400", async () => {
