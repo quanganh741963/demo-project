@@ -6,4 +6,3 @@ app.listen(PORT, () => {
 });
 
 // VD: http://localhost:3000/calculate?number1=1&number2=15&operator=plus
-// VD: http://localhost:3000/test

@@ -1,23 +1,19 @@
-# Name of workflow
 name: Deploy to Render
 
-# Triggers to run workflow
+# Chỉ kích hoạt khi workflow "Calculate CI" hoàn thành
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [closed]
-    branches: [main]
+  workflow_run:
+    workflows: ["Calculate CI"] # Phải khớp với `name:` trong CI file
+    types:
+      - completed # Chạy khi workflow kết thúc (dù thành công hay thất bại)
 
-# Workflow steps
 jobs:
-  # job deploy
   deploy:
-    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    # Chỉ deploy nếu CI kết thúc thành công (passed)
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-      # lệnh gọi đến URL Deploy Hook của Render
       - name: Trigger Render Deploy Hook
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

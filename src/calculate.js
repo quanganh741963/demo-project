@@ -67,9 +67,4 @@ app.get("/", (req, res) => {
   res.send("Calculator API is running!");
 });
 
-// API Endpoint for calculation
-app.get("/test", (req, res) => {
-  res.send("Calculator API is running in test!");
-});
-
 module.exports = app; // Export app for potential testing
