@@ -1,32 +1,47 @@
+# Đặt tên cho workflow, tên này sẽ hiển thị trên GitHub Actions UI
 name: Calculate CI
 
+# Định nghĩa các sự kiện sẽ kích hoạt workflow
 on:
+  # Khi có bất kỳ push nào lên nhánh main
   push:
     branches: [main]
+  # Khi một pull request được merge vào nhánh main
   pull_request:
     branches: [main]
+    # chỉ khi PR đã đóng, dùng kết hợp với điều kiện merged ở dưới
     types: [closed]
 
+# Định nghĩa các việc cần làm
 jobs:
+  # job test
   test:
+    # Điều kiện để job chạy:
+    #  - Nếu là pull_request và đã được merged
+    #  - Hoặc là push trực tiếp lên nhánh main
     if: github.event.pull_request.merged == true || github.event_name == 'push'
+    # Môi trường chạy job: dùng máy ảo Ubuntu mới nhất
     runs-on: ubuntu-latest
 
     steps:
+      # Bước 1: Checkout mã nguồn từ repo về máy ảo CI
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Bước 2: Thiết lập môi trường Node.js version 20 và cache theo Yarn
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "yarn"
-          cache-dependency-path: src/yarn.lock
+          node-version: 20 # Sử dụng Node.js phiên bản 20
+          cache: "yarn" # Bật cache cho Yarn để tăng tốc
+          cache-dependency-path: src/yarn.lock # Đường dẫn tới yarn.lock để xác định dependency
 
+      # Bước 3: Cài đặt các package trong thư mục src (nơi chứa package.json, yarn.lock)
       - name: Install dependencies
-        working-directory: ./src
-        run: yarn install
+        working-directory: ./src # Di chuyển vào thư mục src
+        run: yarn install # Cài đặt dependencies
 
+      # Bước 4: Chạy test bằng lệnh yarn test (đã định nghĩa trong package.json)
       - name: Run tests
-        working-directory: ./src
-        run: yarn test
+        working-directory: ./src # Mục làm việc: ./src
+        run: yarn test # Chạy lệnh: yarn test

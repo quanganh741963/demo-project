@@ -1,0 +1,23 @@
+# Name of workflow
+name: Deploy to Render
+
+# Triggers to run workflow
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+# Workflow steps
+jobs:
+  # job deploy
+  deploy:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      # lệnh gọi đến URL Deploy Hook của Render
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
