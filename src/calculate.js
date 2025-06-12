@@ -50,8 +50,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // API Endpoint for calculation
-// Note: This endpoint is now just '/calculate', as it doesn't serve any HTML
-// VD: http://localhost:3000/calculate?number1=1&number2=15&operator=plus
 app.get("/calculate", (req, res) => {
   const { number1, number2, operator } = req.query;
 
@@ -67,6 +65,11 @@ app.get("/calculate", (req, res) => {
 // A simple root endpoint for the API to confirm it's running
 app.get("/", (req, res) => {
   res.send("Calculator API is running!");
+});
+
+// API Endpoint for calculation
+app.get("/test", (req, res) => {
+  res.send("Calculator API is running in test!");
 });
 
 module.exports = app; // Export app for potential testing
