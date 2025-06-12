@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Calculator Frontend</title>
+    <style>
+      /* Your CSS from before, ensuring it's for the frontend layout */
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f4f4f4;
+        margin: 0;
+      }
+
+      .calculator-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 25px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input[type="number"],
+      select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .result-group {
+        margin-top: 25px;
+        padding: 15px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        min-height: 25px;
+      }
+
+      #resultDisplay {
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="calculator-container">
+      <h1>Simple Calculator</h1>
+      <div class="input-group">
+        <label for="number1">Number 1:</label>
+        <input type="number" id="number1" placeholder="Enter first number" />
+      </div>
+
+      <div class="input-group">
+        <label for="number2">Number 2:</label>
+        <input type="number" id="number2" placeholder="Enter second number" />
+      </div>
+
+      <div class="input-group">
+        <label for="operator">Operator:</label>
+        <select id="operator">
+          <option value="plus">+</option>
+          <option value="minus">-</option>
+          <option value="multi">*</option>
+          <option value="divide">/</option>
+        </select>
+      </div>
+
+      <button id="calculateButton">Calculate</button>
+
+      <div class="result-group">Result: <span id="resultDisplay"></span></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const number1Input = document.getElementById("number1");
+        const number2Input = document.getElementById("number2");
+        const operatorSelect = document.getElementById("operator");
+        const calculateButton = document.getElementById("calculateButton");
+        const resultDisplay = document.getElementById("resultDisplay");
+
+        // Define the base URL for your API
+        // For local development, this will be your backend server's address
+        // When deployed, this would be the actual deployed API URL (e.g., 'https://your-deployed-backend.com')
+        const API_BASE_URL = "http://localhost:3000"; // API is running on port 3000
+
+        async function performCalculation() {
+          const number1 = number1Input.value;
+          const number2 = number2Input.value;
+          const operator = operatorSelect.value;
+
+          // Basic validation (frontend-side)
+          if (number1 === "" || number2 === "") {
+            resultDisplay.textContent = "Please enter both numbers.";
+            resultDisplay.style.color = "red";
+            return;
+          }
+
+          // Construct the URL for the GET request to your API
+          const url = `${API_BASE_URL}/calculate?number1=${number1}&number2=${number2}&operator=${operator}`;
+
+          try {
+            const response = await fetch(url);
+            const data = await response.json(); // Parse the JSON response
+
+            if (response.ok) {
+              resultDisplay.textContent = data; // Display the calculated result
+              resultDisplay.style.color = "#333";
+            } else {
+              // Handle server-side errors (e.g., 400 Bad Request from our API)
+              resultDisplay.textContent = `Error: ${
+                data.error || "Something went wrong on the server."
+              }`;
+              resultDisplay.style.color = "red";
+            }
+          } catch (error) {
+            // Handle network or other client-side errors
+            resultDisplay.textContent = `Network Error: ${error.message}. Make sure the backend server is running.`;
+            resultDisplay.style.color = "red";
+          }
+        }
+
+        calculateButton.addEventListener("click", performCalculation);
+
+        number1Input.addEventListener("keypress", (event) => {
+          if (event.key === "Enter") {
+            performCalculation();
+          }
+        });
+
+        number2Input.addEventListener("keypress", (event) => {
+          if (event.key === "Enter") {
+            performCalculation();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

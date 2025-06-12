@@ -1,0 +1,24 @@
+# Dockerfile.prod
+
+# Sử dụng image nhẹ cho Node.js
+FROM node:24-alpine3.21
+
+# Tạo thư mục làm việc trong container
+WORKDIR /app
+
+# Copy chỉ những file cần thiết cho production (không copy test, .gitignore,...)
+COPY package.json yarn.lock ./
+
+# Cài dependencies production, lệnh này sẽ chỉ cái các package cơ bản (không cài devDependencies)
+RUN yarn install --production
+
+# Copy toàn bộ mã nguồn (chứa calculate.js)
+COPY . .
+
+# Expose cổng mà app sẽ chạy (3000)
+EXPOSE 3000
+
+# Lệnh khởi chạy app
+CMD ["node", "calculate.js"]
+
+# Build image: docker build -f docker/Dockerfile.prod -t calc-api-prod ./src
